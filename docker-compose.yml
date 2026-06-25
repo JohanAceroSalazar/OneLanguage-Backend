@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  backend:
+    build: .
+    container_name: Backend-OneLanguage
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_DATASOURCE_URL: ***REMOVED***
+      SPRING_DATASOURCE_USERNAME: ***REMOVED***
+      SPRING_DATASOURCE_PASSWORD: ***REMOVED***
