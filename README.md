@@ -1,6 +1,6 @@
 # OneLanguage-Backend
 
-Backend del proyecto **OneLanguage**, desarrollado en **Spring Boot** y orientado a una arquitectura **by module**.  
+Backend del proyecto **OneLanguage**, desarrollado en **Spring Boot** y orientado a una arquitectura **by module**.
 Este repositorio se encarga de la lógica del servidor, la conexión con PostgreSQL y la preparación de la base para trabajar con el módulo de usuarios.
 
 ## Objetivo del backend
@@ -14,7 +14,7 @@ El backend centraliza:
 
 ## Arquitectura by module
 
-La organización del backend está pensada por módulos funcionales, no por capas mezcladas en un solo paquete grande.  
+La organización del backend está pensada por módulos funcionales, no por capas mezcladas en un solo paquete grande.
 Eso hace más fácil crecer el proyecto sin desordenarlo.
 
 La idea es que cada módulo represente una parte clara del negocio de OneLanguage.
@@ -22,10 +22,11 @@ La idea es que cada módulo represente una parte clara del negocio de OneLanguag
 ### Módulos actuales
 
 - `config`
+
   - Contiene configuraciones transversales del backend.
   - Actualmente incluye un verificador de conexión con la base de datos.
-
 - `users`
+
   - Contiene todo lo relacionado con el módulo de usuarios.
   - Incluye la entidad JPA y el repositorio para acceder a la tabla `users`.
 
@@ -34,36 +35,37 @@ La idea es que cada módulo represente una parte clara del negocio de OneLanguag
 Estos módulos todavía no tienen código, pero ya están pensados para el crecimiento del proyecto:
 
 - `auth`
+
   - Se encargará de inicio de sesión, registro, cierre de sesión y tokens JWT.
   - También puede manejar recuperación de contraseña y renovación de sesión.
   - En un proyecto como OneLanguage, este módulo es clave para identificar quién entra a la plataforma y qué permisos tiene.
-
 - `history`
+
   - Guardará el historial de uso de la plataforma.
   - Puede registrar acciones como inicios de sesión, traducciones realizadas, intentos fallidos, cambios de perfil o actividad del usuario.
   - Sirve para auditoría, trazabilidad y seguimiento del uso del sistema.
-
 - `translations`
+
   - Se orientará a la lógica principal del proyecto: traducción de señas.
   - Puede manejar la entrada de datos, interpretación de señas, resultados traducidos y almacenamiento de traducciones realizadas.
   - Este módulo sería uno de los más importantes porque representa la funcionalidad central de OneLanguage.
-
 - `gestures`
+
   - Puede almacenar catálogos de señas, movimientos o patrones reconocidos.
   - También puede servir para clasificar señas por categorías, letras, palabras o frases.
   - Es útil si después quieres entrenar, consultar o mejorar el reconocimiento de señas.
-
 - `roles`
+
   - Administrará los tipos de acceso del sistema.
   - Por ejemplo: administrador, usuario, moderador o docente.
   - Permite controlar qué puede hacer cada persona dentro de la aplicación.
-
 - `permissions`
+
   - Complementa a `roles` para definir acciones más específicas.
   - Por ejemplo: crear usuario, editar traducciones, ver historial o administrar contenido.
   - Es útil si quieres una seguridad más fina dentro del backend.
-
 - `notifications`
+
   - Puede manejar mensajes internos, alertas o notificaciones por correo.
   - Sirve para avisos como registro exitoso, cambios de contraseña o confirmaciones.
 
@@ -72,18 +74,19 @@ Estos módulos todavía no tienen código, pero ya están pensados para el creci
 Cada módulo puede crecer con sus propias partes:
 
 - `entity`
+
   - Representa las tablas de la base de datos.
-
 - `repository`
+
   - Permite consultar y guardar datos en PostgreSQL.
-
 - `service`
+
   - Aquí iría la lógica de negocio.
-
 - `controller`
-  - Aquí irían los endpoints REST.
 
+  - Aquí irían los endpoints REST.
 - `dto`
+
   - Sirve para recibir y enviar datos sin exponer directamente las entidades.
 
 En este momento el proyecto ya tiene:
@@ -368,3 +371,4 @@ Lo más lógico ahora es continuar con:
 2. `controller` del módulo `users`
 3. endpoints de registro y consulta
 4. login con JWT
+
