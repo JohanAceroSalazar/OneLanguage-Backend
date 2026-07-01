@@ -16,5 +16,5 @@ public class UserRequestDto {
     private String fullName;
 
     @NotBlank(message = "La contrasena es obligatoria")
-    private String passwordHash;
+    private String password;
 }
