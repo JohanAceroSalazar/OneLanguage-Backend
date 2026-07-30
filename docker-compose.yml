@@ -7,6 +7,11 @@ services:
     ports:
       - "8084:8084"
     environment:
+      # Configuración de PostgreSQL
       SPRING_DATASOURCE_URL: ***REMOVED***
       SPRING_DATASOURCE_USERNAME: ***REMOVED***
       SPRING_DATASOURCE_PASSWORD: ***REMOVED***
+
+      # Configuración de Gmail
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}

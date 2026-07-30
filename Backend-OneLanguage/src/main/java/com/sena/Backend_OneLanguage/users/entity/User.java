@@ -1,8 +1,14 @@
 package com.sena.Backend_OneLanguage.users.entity;
 
+import com.sena.Backend_OneLanguage.passwordreset.entity.PasswordResetToken;
+import jakarta.persistence.CascadeType;
+import java.util.ArrayList;
+import java.util.List;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -57,6 +63,14 @@ public class User {
 
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
+
+    @OneToMany(
+        mappedBy = "user",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true,
+        fetch = FetchType.LAZY
+        )
+    private List<PasswordResetToken> passwordResetTokens = new ArrayList<>();
 
     @PrePersist
     void onCreate() {
