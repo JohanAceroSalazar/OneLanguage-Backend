@@ -371,4 +371,3 @@ Lo más lógico ahora es continuar con:
 2. `controller` del módulo `users`
 3. endpoints de registro y consulta
 4. login con JWT
-

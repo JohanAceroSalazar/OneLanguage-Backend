@@ -7,6 +7,11 @@ services:
     ports:
       - "8084:8084"
     environment:
+      # Configuración de PostgreSQL
       SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5438/proyect_onelanguage
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: Johan2509
+
+      # Configuración de Gmail
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
