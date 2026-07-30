@@ -47,6 +47,10 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
+                        // Endpoint de error de Spring Boot
+                        .requestMatchers("/error")
+                        .permitAll()
+
                         // Swagger
                         .requestMatchers(
                                 "/swagger-ui/**",
@@ -66,8 +70,11 @@ public class SecurityConfig {
                         .permitAll()
 
                         // Password Reset
-                        .requestMatchers("/passwordreset/**")
-                        .permitAll()
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/auth/forgot-password",
+                                "/auth/reset-password"
+                        ).permitAll()
 
                         // Todo lo demás requiere JWT
                         .anyRequest()
