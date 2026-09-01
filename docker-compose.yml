@@ -7,6 +7,10 @@ services:
     ports:
       - "8084:8084"
     environment:
+      # Configuración de Servidor
+      SERVER_PORT: 8084
+      SERVER_ADDRESS: 0.0.0.0
+
       # Configuración de PostgreSQL
       SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5438/proyect_onelanguage
       SPRING_DATASOURCE_USERNAME: postgres
