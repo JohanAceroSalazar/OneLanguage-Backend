@@ -4,8 +4,10 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.UUID;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 import com.sena.Backend_OneLanguage.email.service.EmailService;
 import com.sena.Backend_OneLanguage.passwordreset.dto.ForgotPasswordRequest;
 import com.sena.Backend_OneLanguage.passwordreset.dto.ResetPasswordRequest;
@@ -47,7 +49,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         User user = userRepository
                 .findByEmailAndDeletedAtIsNull(request.getEmail())
                 .orElseThrow(() ->
-                        new RuntimeException("No existe un usuario con ese correo."));
+                        new ResponseStatusException(HttpStatus.BAD_REQUEST, "No existe un usuario con ese correo."));
 
         // Eliminar cualquier token anterior para que el usuario
         // solo tenga un enlace de recuperación válido.
@@ -107,7 +109,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         if (!request.getNewPassword()
                 .equals(request.getConfirmPassword())) {
 
-        throw new RuntimeException(
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                 "Las contraseñas no coinciden."
                 );
         }
@@ -119,7 +121,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
                 request.getTokenIdentifier()
                 )
                 .orElseThrow(() ->
-                        new RuntimeException(
+                        new ResponseStatusException(HttpStatus.BAD_REQUEST,
                         "El enlace de recuperación no es válido."
                         )
                 );
@@ -127,7 +129,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         // 3. Verificar si el token ya fue utilizado
         if (passwordResetToken.getUsedAt() != null) {
 
-        throw new RuntimeException(
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                 "El enlace de recuperación ya fue utilizado."
                 );
         }
@@ -136,7 +138,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         if (passwordResetToken.getExpiresAt()
                 .isBefore(OffsetDateTime.now(ZoneOffset.UTC))) {
 
-        throw new RuntimeException(
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                 "El enlace de recuperación ha expirado."
                 );
         }
@@ -150,7 +152,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 
         if (!tokenValido) {
 
-        throw new RuntimeException(
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                 "El enlace de recuperación no es válido."
                 );
         }
