@@ -47,6 +47,9 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
+                        // Permitir preflight CORS
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
                         // Endpoint de error de Spring Boot
                         .requestMatchers("/error")
                         .permitAll()
