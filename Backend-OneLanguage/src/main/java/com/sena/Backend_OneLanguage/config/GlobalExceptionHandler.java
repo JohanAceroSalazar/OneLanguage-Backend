@@ -43,7 +43,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleUnexpected(Exception exception) {
-        return response(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error interno. Inténtelo más tarde.");
+        exception.printStackTrace();
+
+        return response(
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            "Ocurrió un error interno. Inténtelo más tarde."
+        );
     }
 
     private ResponseEntity<Map<String, Object>> response(HttpStatus status, String message) {
