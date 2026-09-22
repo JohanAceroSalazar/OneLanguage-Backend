@@ -5,6 +5,7 @@ import java.time.ZoneOffset;
 import java.util.UUID;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,10 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PasswordResetServiceImpl implements PasswordResetService {
 
-    // URL del frontend donde el usuario podrá restablecer su contraseña.
-    // Más adelante se puede mover al application.yml para no dejarla fija.
-        private static final String RESET_PASSWORD_URL =
-                "http://localhost:5173/reset-password";
+        @Value("${app.frontend-base-url}")
+        private String frontendBaseUrl;
 
     // Repositorio para consultar los usuarios.
         private final UserRepository userRepository;
@@ -87,8 +86,8 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 
         // Construir el enlace que posteriormente será enviado por correo.
         String resetLink =
-                RESET_PASSWORD_URL
-                + "?id="
+                frontendBaseUrl.replaceAll("/+$", "")
+                + "/reset-password?id="
                 + tokenIdentifier
                 + "&token="
                 + rawToken;
