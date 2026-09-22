@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PasswordResetServiceImpl implements PasswordResetService {
 
-        @Value("${app.frontend-base-url}")
+        @Value("${app.frontend-base-url:http://localhost:5173}")
         private String frontendBaseUrl;
 
     // Repositorio para consultar los usuarios.
