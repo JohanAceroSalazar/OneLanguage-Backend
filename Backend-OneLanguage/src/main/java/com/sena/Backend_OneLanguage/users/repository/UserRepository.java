@@ -3,20 +3,20 @@ package com.sena.Backend_OneLanguage.users.repository;
 
 import com.sena.Backend_OneLanguage.users.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
+import jakarta.persistence.LockModeType;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
 
-    Optional<User> findByEmail(String email);
-
     Optional<User> findByEmailAndDeletedAtIsNull(String email);
 
-    Optional<User> findByIdUserAndDeletedAtIsNull(UUID idUser);
-
-    List<User> findAllByDeletedAtIsNull();
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select u from User u where u.email = :email and u.deletedAt is null")
+    Optional<User> findForLoginByEmailAndDeletedAtIsNull(String email);
 
     boolean existsByEmailAndDeletedAtIsNull(String email);
 }

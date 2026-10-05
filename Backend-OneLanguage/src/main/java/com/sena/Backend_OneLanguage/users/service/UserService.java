@@ -3,17 +3,11 @@ package com.sena.Backend_OneLanguage.users.service;
 
 import com.sena.Backend_OneLanguage.users.dto.UserRequestDto;
 import com.sena.Backend_OneLanguage.users.dto.UserResponseDto;
-
-import java.util.List;
-import java.util.UUID;
+import com.sena.Backend_OneLanguage.users.entity.User;
 
 public interface UserService {
 
     UserResponseDto create(UserRequestDto request);
 
-    UserResponseDto findById(UUID id);
-
-    List<UserResponseDto> findAll();
-
-    void delete(UUID id);
+    UserResponseDto currentUser(User user);
 }

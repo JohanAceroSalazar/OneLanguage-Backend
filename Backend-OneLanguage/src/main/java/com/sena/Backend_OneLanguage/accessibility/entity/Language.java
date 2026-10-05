@@ -24,4 +24,10 @@ public class Language {
 
     @Column(nullable = false, unique = true, length = 10)
     private String code;
+
+    @Column(name = "is_default")
+    private Boolean isDefault;
+
+    @Column(name = "is_active")
+    private Boolean isActive;
 }

@@ -10,8 +10,8 @@ services:
       # Configuración de Servidor
       SERVER_PORT: ${SERVER_PORT:-8084}
       SERVER_ADDRESS: ${SERVER_ADDRESS:-0.0.0.0}
-      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
-      APP_FRONTEND_BASE_URL: ${APP_FRONTEND_BASE_URL:-http://localhost:5173}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-https://localhost:5173,https://127.0.0.1:5173}
+      APP_FRONTEND_BASE_URL: ${APP_FRONTEND_BASE_URL:-https://localhost:5173}
 
       # Configuración de PostgreSQL
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
