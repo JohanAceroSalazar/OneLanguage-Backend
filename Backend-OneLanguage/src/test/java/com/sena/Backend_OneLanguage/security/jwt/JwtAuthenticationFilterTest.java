@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 class JwtAuthenticationFilterTest {
 
@@ -42,7 +43,7 @@ class JwtAuthenticationFilterTest {
                 jwtService,
                 userDetailsService,
                 new JwtAuthenticationEntryPoint());
-        MockHttpServletRequest request = new MockHttpServletRequest("DELETE", "/api/users/1");
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/translations");
         request.addHeader("Authorization", "Bearer " + jwtService.generateToken(userDetails));
         MockHttpServletResponse response = new MockHttpServletResponse();
         FilterChain filterChain = mock(FilterChain.class);
@@ -67,7 +68,33 @@ class JwtAuthenticationFilterTest {
                 jwtService,
                 mock(CustomUserDetailsService.class),
                 new JwtAuthenticationEntryPoint());
-        MockHttpServletRequest request = new MockHttpServletRequest("DELETE", "/api/users/1");
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/translations");
+        request.addHeader("Authorization", "Bearer " + jwtService.generateToken(userDetails));
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        filter.doFilter(request, response, mock(FilterChain.class));
+
+        assertEquals(401, response.getStatus());
+    }
+
+    @Test
+    void returnsUnauthorizedWhenJwtUserNoLongerExists() throws Exception {
+        JwtService jwtService = jwtServiceWithExpiration(60_000);
+        User user = User.builder()
+                .email("deleted@example.com")
+                .passwordHash("encoded-password")
+                .userStatus(true)
+                .build();
+        CustomUserDetails userDetails = new CustomUserDetails(user);
+        CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+        when(userDetailsService.loadUserByUsername(user.getEmail()))
+                .thenThrow(new UsernameNotFoundException("Usuario no encontrado"));
+
+        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(
+                jwtService,
+                userDetailsService,
+                new JwtAuthenticationEntryPoint());
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/users/me");
         request.addHeader("Authorization", "Bearer " + jwtService.generateToken(userDetails));
         MockHttpServletResponse response = new MockHttpServletResponse();
 
