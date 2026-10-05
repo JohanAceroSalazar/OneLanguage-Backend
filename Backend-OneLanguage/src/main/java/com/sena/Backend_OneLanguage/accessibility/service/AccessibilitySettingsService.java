@@ -8,17 +8,21 @@ import com.sena.Backend_OneLanguage.accessibility.repository.AccessibilitySettin
 import com.sena.Backend_OneLanguage.accessibility.repository.LanguageRepository;
 import com.sena.Backend_OneLanguage.users.entity.User;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
 public class AccessibilitySettingsService {
-    private static final String DEFAULT_LANGUAGE = "es";
     private static final String DEFAULT_TEXT_SIZE = "medium";
     private static final String DEFAULT_THEME = "light";
+    private static final Set<String> SUPPORTED_LANGUAGES = Set.of("es", "en", "pt", "it");
 
     private final AccessibilitySettingsRepository settingsRepository;
     private final LanguageRepository languageRepository;
@@ -36,8 +40,13 @@ public class AccessibilitySettingsService {
                 .orElseGet(() -> createDefaults(user));
 
         if (request.language() != null) {
-            settings.setLanguage(languageRepository.findByCode(request.language())
-                    .orElseThrow(() -> new IllegalArgumentException("El idioma no está configurado")));
+            if (!SUPPORTED_LANGUAGES.contains(request.language())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "El idioma no está soportado por One Language");
+            }
+            settings.setLanguage(languageRepository.findByCodeAndIsActiveTrue(request.language())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            "El idioma no existe o está inactivo")));
         }
         if (request.textSize() != null) settings.setTextSize(request.textSize());
         if (request.theme() != null) settings.setThemeColor(request.theme());
@@ -46,8 +55,14 @@ public class AccessibilitySettingsService {
     }
 
     private AccessibilitySettings createDefaults(User user) {
-        Language language = languageRepository.findByCode(DEFAULT_LANGUAGE)
-                .orElseThrow(() -> new IllegalStateException("No existe el idioma predeterminado"));
+        List<Language> defaults = languageRepository.findByIsDefaultTrueAndIsActiveTrue();
+        if (defaults.isEmpty()) {
+            throw new IllegalStateException("No existe un idioma predeterminado activo en accessibility.language");
+        }
+        if (defaults.size() > 1) {
+            throw new IllegalStateException("La configuración de idiomas contiene múltiples defaults activos");
+        }
+        Language language = defaults.get(0);
         AccessibilitySettings settings = new AccessibilitySettings();
         settings.setIdSettings(UUID.randomUUID());
         settings.setUser(user);

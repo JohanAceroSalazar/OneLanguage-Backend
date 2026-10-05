@@ -1,9 +1,6 @@
 //Aquí vive la lógica de negocio
 package com.sena.Backend_OneLanguage.users.service.impl;
 
-import java.util.List;
-import java.util.UUID;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,26 +41,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserResponseDto findById(UUID id) {
-        User user = userRepository.findByIdUserAndDeletedAtIsNull(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontro el usuario con el id: " + id));
-
+    public UserResponseDto currentUser(User user) {
         return userMapper.toResponse(user);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<UserResponseDto> findAll() {
-        return userMapper.toResponseList(userRepository.findAllByDeletedAtIsNull());
-    }
-
-    @Override
-    public void delete(UUID id) {
-        User user = userRepository.findByIdUserAndDeletedAtIsNull(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontro el usuario con el id: " + id));
-
-        user.setDeletedAt(java.time.OffsetDateTime.now(java.time.ZoneOffset.UTC));
-        user.setUserStatus(Boolean.FALSE);
-        userRepository.save(user);
-    }
 }

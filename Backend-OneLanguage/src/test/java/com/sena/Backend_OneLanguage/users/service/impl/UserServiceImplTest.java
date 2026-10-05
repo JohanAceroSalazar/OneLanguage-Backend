@@ -71,4 +71,24 @@ class UserServiceImplTest {
 
         assertEquals(409, exception.getStatusCode().value());
     }
+
+    @Test
+    void returnsCurrentUserThroughSafeResponseMapper() {
+        User user = User.builder()
+                .idUser(UUID.randomUUID())
+                .email("profile@example.com")
+                .fullName("Profile User")
+                .passwordHash("secret-hash")
+                .failedAttempts(3)
+                .build();
+        UserResponseDto response = new UserResponseDto();
+        response.setIdUser(user.getIdUser());
+        response.setFullName(user.getFullName());
+        response.setEmail(user.getEmail());
+
+        when(userMapper.toResponse(user)).thenReturn(response);
+
+        assertEquals(response, userService.currentUser(user));
+        verify(userMapper).toResponse(user);
+    }
 }
