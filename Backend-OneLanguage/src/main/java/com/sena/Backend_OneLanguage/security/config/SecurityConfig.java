@@ -69,9 +69,6 @@ public class SecurityConfig {
                         .permitAll()
 
                         // (Opcional) consultar usuarios sin autenticación
-                        .requestMatchers(HttpMethod.GET, "/api/users/**")
-                        .permitAll()
-
                         // Password Reset
                         .requestMatchers(
                                 HttpMethod.POST,

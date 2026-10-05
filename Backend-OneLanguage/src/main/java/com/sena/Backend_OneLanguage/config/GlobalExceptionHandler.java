@@ -1,5 +1,6 @@
 package com.sena.Backend_OneLanguage.config;
 
+import com.sena.Backend_OneLanguage.auth.exception.LoginFailureException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -36,9 +37,29 @@ public class GlobalExceptionHandler {
         return response(HttpStatus.UNAUTHORIZED, "No autorizado. Debe iniciar sesión.");
     }
 
+    @ExceptionHandler(LoginFailureException.class)
+    public ResponseEntity<Map<String, Object>> handleLoginFailure(LoginFailureException exception) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("status", exception.getStatus().value());
+        body.put("code", exception.getCode());
+        body.put("message", exception.getMessage());
+        if (exception.getRemainingAttempts() != null) {
+            body.put("remainingAttempts", exception.getRemainingAttempts());
+        }
+        if (exception.getLockedUntil() != null) {
+            body.put("lockedUntil", exception.getLockedUntil());
+        }
+        return ResponseEntity.status(exception.getStatus()).body(body);
+    }
+
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Map<String, Object>> handleAccessDenied(AccessDeniedException exception) {
         return response(HttpStatus.FORBIDDEN, "No tiene permisos para realizar esta acción.");
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Map<String, Object>> handleIllegalState(IllegalStateException exception) {
+        return response(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

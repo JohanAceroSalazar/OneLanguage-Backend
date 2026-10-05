@@ -3,19 +3,11 @@ package com.sena.Backend_OneLanguage.users.mapper;
 import com.sena.Backend_OneLanguage.users.dto.UserRequestDto;
 import com.sena.Backend_OneLanguage.users.dto.UserResponseDto;
 import com.sena.Backend_OneLanguage.users.entity.User;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 
 @Component
 public class UserMapper {
-
-    private final PasswordEncoder passwordEncoder;
-
-    UserMapper(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
 
     public User toEntity(UserRequestDto request) {
         if (request == null) {
@@ -40,9 +32,4 @@ public class UserMapper {
         return response;
     }
 
-    public List<UserResponseDto> toResponseList(List<User> users) {
-        return users.stream()
-                .map(this::toResponse)
-                .toList();
-    }
 }
