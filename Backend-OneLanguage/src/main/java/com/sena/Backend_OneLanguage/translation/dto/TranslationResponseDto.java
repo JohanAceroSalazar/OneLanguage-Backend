@@ -11,5 +11,6 @@ public class TranslationResponseDto {
     UUID id;
     String translatedText;
     Float confidence;
+    boolean hasRecording;
     OffsetDateTime createdAt;
 }
