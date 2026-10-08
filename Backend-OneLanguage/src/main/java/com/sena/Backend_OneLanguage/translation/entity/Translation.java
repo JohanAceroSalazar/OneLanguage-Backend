@@ -45,6 +45,15 @@ public class Translation {
     @Column(name = "translation_status", length = 20)
     private String translationStatus;
 
+    @Column(name = "recording_path", length = 255)
+    private String recordingPath;
+
+    @Column(name = "recording_content_type", length = 100)
+    private String recordingContentType;
+
+    @Column(name = "recording_size")
+    private Long recordingSize;
+
     @Column(name = "created_at", updatable = false)
     private OffsetDateTime createdAt;
 
