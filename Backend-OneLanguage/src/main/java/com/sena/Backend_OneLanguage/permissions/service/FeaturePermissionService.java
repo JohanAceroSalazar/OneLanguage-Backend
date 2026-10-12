@@ -24,7 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @RequiredArgsConstructor
 public class FeaturePermissionService {
-    private static final Set<String> FEATURES = Set.of("camera", "audio", "files");
+    private static final Set<String> FEATURES = Set.of("camera", "audio");
     private static final String ENABLED = "enabled";
     private static final String DISABLED = "disabled";
 
@@ -82,7 +82,6 @@ public class FeaturePermissionService {
     private FeaturePermissionsResponseDto toResponse(Map<String, UserPermission> permissions) {
         return new FeaturePermissionsResponseDto(
                 ENABLED.equals(permissions.get("camera").getStatus()),
-                ENABLED.equals(permissions.get("audio").getStatus()),
-                ENABLED.equals(permissions.get("files").getStatus()));
+                ENABLED.equals(permissions.get("audio").getStatus()));
     }
 }
