@@ -5,6 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 public record UpdateFeaturePermissionRequestDto(
-        @NotBlank @Pattern(regexp = "camera|audio|files") String feature,
+        @NotBlank @Pattern(regexp = "camera|audio") String feature,
         @NotNull Boolean enabled) {
 }
