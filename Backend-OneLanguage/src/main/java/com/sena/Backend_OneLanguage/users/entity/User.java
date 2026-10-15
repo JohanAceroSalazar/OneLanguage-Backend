@@ -70,6 +70,7 @@ public class User {
         orphanRemoval = true,
         fetch = FetchType.LAZY
         )
+    @Builder.Default
     private List<PasswordResetToken> passwordResetTokens = new ArrayList<>();
 
     @PrePersist
