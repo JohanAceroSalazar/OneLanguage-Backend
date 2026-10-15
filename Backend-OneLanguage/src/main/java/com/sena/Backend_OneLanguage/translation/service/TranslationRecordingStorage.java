@@ -31,7 +31,7 @@ public class TranslationRecordingStorage {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La grabacion es obligatoria");
         }
         if (recording.getSize() > MAX_RECORDING_SIZE) {
-            throw new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE, "La grabacion supera 25 MB");
+            throw new ResponseStatusException(HttpStatus.CONTENT_TOO_LARGE, "La grabacion supera 25 MB");
         }
 
         String contentType = recording.getContentType();
