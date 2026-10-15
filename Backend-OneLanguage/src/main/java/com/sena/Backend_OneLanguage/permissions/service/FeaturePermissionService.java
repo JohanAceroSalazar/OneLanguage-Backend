@@ -12,6 +12,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -49,15 +50,15 @@ public class FeaturePermissionService {
 
     private Map<String, UserPermission> ensurePermissions(User user) {
         Map<String, Permission> catalog = permissionRepository.findByPermissionNameIn(FEATURES).stream()
-                .collect(Collectors.toMap(Permission::getPermissionName, Function.identity()));
+                .collect(Collectors.toMap(this::permissionName, Function.identity()));
         if (catalog.size() != FEATURES.size()) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
                     "El catálogo de permisos no está configurado");
         }
 
         Map<String, UserPermission> existing = userPermissionRepository.findByUserIdUser(user.getIdUser()).stream()
-                .filter(entry -> FEATURES.contains(entry.getPermission().getPermissionName()))
-                .collect(Collectors.toMap(entry -> entry.getPermission().getPermissionName(), Function.identity()));
+                .filter(entry -> FEATURES.contains(permissionName(entry)))
+                .collect(Collectors.toMap(this::permissionName, Function.identity()));
 
         List<UserPermission> missing = FEATURES.stream()
                 .filter(feature -> !existing.containsKey(feature))
@@ -65,7 +66,7 @@ public class FeaturePermissionService {
                 .toList();
         if (!missing.isEmpty()) {
             userPermissionRepository.saveAll(missing);
-            missing.forEach(entry -> existing.put(entry.getPermission().getPermissionName(), entry));
+            missing.forEach(entry -> existing.put(permissionName(entry), entry));
         }
         return existing;
     }
@@ -77,6 +78,14 @@ public class FeaturePermissionService {
         userPermission.setPermission(permission);
         userPermission.setStatus(DISABLED);
         return userPermission;
+    }
+
+    private String permissionName(UserPermission userPermission) {
+        return permissionName(Objects.requireNonNull(userPermission.getPermission(), "permission"));
+    }
+
+    private String permissionName(Permission permission) {
+        return Objects.requireNonNull(permission.getPermissionName(), "permissionName");
     }
 
     private FeaturePermissionsResponseDto toResponse(Map<String, UserPermission> permissions) {
