@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import com.sena.Backend_OneLanguage.security.jwt.JwtAuthenticationEntryPoint;
 import com.sena.Backend_OneLanguage.security.jwt.JwtAuthenticationFilter;
 import org.springframework.http.HttpMethod;
@@ -34,6 +35,15 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
 
                 .cors(Customizer.withDefaults())
+
+                .headers(headers -> headers
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
+                        .contentTypeOptions(Customizer.withDefaults())
+                        .referrerPolicy(referrer -> referrer
+                                .policy(org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
+                        .httpStrictTransportSecurity(hsts -> hsts
+                                .includeSubDomains(true)
+                                .maxAgeInSeconds(31536000)))
 
                 .sessionManagement(session ->
 
