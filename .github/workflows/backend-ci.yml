@@ -1,0 +1,50 @@
+name: Backend CI
+on:
+  pull_request:
+    branches: [dev, qa, main]
+  push:
+    branches: [dev, qa, main, "HU-**"]
+permissions:
+  contents: read
+jobs:
+  compose-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ci_database
+          SPRING_DATASOURCE_USERNAME: ci_user
+          SPRING_DATASOURCE_PASSWORD: ci_password_for_validation_only
+          JWT_SECRET: ci-jwt-secret-for-validation-only-at-least-32-chars
+          MAIL_USERNAME: ci_mail_user
+          MAIL_PASSWORD: ci_mail_password
+        run: docker compose --env-file /dev/null config --quiet
+  test:
+    runs-on: ubuntu-latest
+    needs: compose-validation
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: ci_user
+          POSTGRES_PASSWORD: ci_password_for_tests_only
+          POSTGRES_DB: ci_database
+        options: >-
+          --health-cmd "pg_isready -U ci_user -d ci_database"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - working-directory: Backend-OneLanguage
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/ci_database
+          SPRING_DATASOURCE_USERNAME: ci_user
+          SPRING_DATASOURCE_PASSWORD: ci_password_for_tests_only
+          JWT_SECRET: ci-jwt-secret-for-tests-only-at-least-32-chars
+          MAIL_USERNAME: ci_mail_user
+          MAIL_PASSWORD: ci_mail_password
+        run: ./mvnw verify
